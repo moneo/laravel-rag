@@ -27,12 +27,36 @@ abstract class TestCase extends BaseTestCase
 
     protected function defineEnvironment($app): void
     {
+        // Use in-memory SQLite for all tests
+        $app['config']->set('database.default', 'testing');
+        $app['config']->set('database.connections.testing', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ]);
+
         $app['config']->set('rag.vector_store', 'sqlite-vec');
+        $app['config']->set('rag.stores.sqlite-vec.connection', 'testing');
         $app['config']->set('rag.embedding.driver', 'openai');
         $app['config']->set('rag.embedding.model', 'text-embedding-3-small');
         $app['config']->set('rag.embedding.dimensions', 1536);
         $app['config']->set('rag.embedding.cache', false);
         $app['config']->set('rag.llm.provider', 'openai');
         $app['config']->set('rag.llm.model', 'gpt-4o');
+    }
+
+    protected function defineDatabaseMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        // Create the documents table for vector store tests
+        \Illuminate\Support\Facades\Schema::create('documents', function (\Illuminate\Database\Schema\Blueprint $table) {
+            $table->string('id')->primary();
+            $table->binary('embedding')->nullable();
+            $table->text('content')->nullable();
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+        });
     }
 }
