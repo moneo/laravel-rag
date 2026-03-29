@@ -17,3 +17,4 @@ parameters:
         - '#Unsafe usage of new static#'
         - '#on left side of \?\? always exists and is not nullable#'
         - '#Trait .+ is used zero times and is not analysed#'
+        - '#should return Illuminate\\Support\\Collection<int, array\{.+\}> but returns Illuminate\\Support\\Collection<#'
