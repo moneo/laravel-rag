@@ -166,7 +166,7 @@ jobs:
           php-version: '8.3'
           coverage: pcov
       - run: composer install --no-interaction --prefer-dist
-      - run: vendor/bin/pest --coverage --min=40 --coverage-clover=coverage.xml
+      - run: vendor/bin/pest --coverage --min=60 --coverage-clover=coverage.xml
       - uses: codecov/codecov-action@v6
         with:
           files: coverage.xml

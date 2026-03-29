@@ -44,5 +44,10 @@
         <include>
             <directory>src</directory>
         </include>
+        <exclude>
+            <directory>src/Filament</directory>
+            <directory>src/Livewire</directory>
+            <directory>src/DevTools</directory>
+        </exclude>
     </source>
 </phpunit>
