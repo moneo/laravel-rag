@@ -21,7 +21,7 @@ jobs:
           composer global require cyclonedx/cyclonedx-php-composer
           ~/.composer/vendor/bin/cyclonedx-composer --output-file=sbom.json --spec-version=1.4
       - name: Upload SBOM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sbom
           path: sbom.json
