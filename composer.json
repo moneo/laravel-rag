@@ -16,7 +16,7 @@
         "illuminate/database": "^11.0|^12.0",
         "illuminate/console": "^11.0|^12.0",
         "illuminate/events": "^11.0|^12.0",
-        "prism-php/prism": "^1.0"
+        "prism-php/prism": "^0.100"
     },
     "require-dev": {
         "orchestra/testbench": "^9.0|^10.0",
