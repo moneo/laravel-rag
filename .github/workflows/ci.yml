@@ -280,6 +280,4 @@ jobs:
           coverage: none
       - run: composer install --no-interaction --prefer-dist
       - name: Check licenses
-        run: |
-          composer global require dominikb/composer-license-checker
-          ~/.composer/vendor/bin/composer-license-checker check --allowlist=MIT,Apache-2.0,BSD-2-Clause,BSD-3-Clause,ISC,GPL-2.0-only,GPL-3.0-only,OSL-3.0
+        run: composer licenses --no-dev --format=json | php -r '$d=json_decode(file_get_contents("php://stdin"),true);$bad=[];foreach($d["dependencies"]??[] as $p=>$i){$l=$i["license"][0]??"";if(!in_array($l,["MIT","Apache-2.0","BSD-2-Clause","BSD-3-Clause","ISC"]))$bad[]="$p ($l)";}if($bad){echo"Disallowed licenses:\n".implode("\n",$bad)."\n";exit(1);}echo"All production licenses OK\n";'
