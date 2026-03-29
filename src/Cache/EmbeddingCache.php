@@ -50,7 +50,7 @@ class EmbeddingCache
         $this->hits++;
         RagLogger::cache('hit', ['text' => $text]);
 
-        $decoded = json_decode($row->embedding, true);
+        $decoded = json_decode((string) $row->embedding, true);
 
         try {
             return CacheIntegrityGuard::validateCachedVector($decoded);

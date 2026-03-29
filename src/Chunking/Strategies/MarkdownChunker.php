@@ -19,7 +19,7 @@ class MarkdownChunker implements ChunkerContract
 
         $text = trim($text);
 
-        if (empty($text)) {
+        if ($text === '' || $text === '0') {
             return [];
         }
 
@@ -35,7 +35,7 @@ class MarkdownChunker implements ChunkerContract
         foreach ($sections as $section) {
             $section = trim($section);
 
-            if (empty($section)) {
+            if ($section === '' || $section === '0') {
                 continue;
             }
 
@@ -49,7 +49,7 @@ class MarkdownChunker implements ChunkerContract
                 foreach ($paragraphs as $paragraph) {
                     $paragraph = trim($paragraph);
 
-                    if (empty($paragraph)) {
+                    if ($paragraph === '' || $paragraph === '0') {
                         continue;
                     }
 
@@ -61,7 +61,7 @@ class MarkdownChunker implements ChunkerContract
                     $currentChunk .= ($currentChunk !== '' ? "\n\n" : '').$paragraph;
                 }
 
-                if (! empty(trim($currentChunk))) {
+                if (!in_array(trim($currentChunk), ['', '0'], true)) {
                     $chunks[] = trim($currentChunk);
                 }
             }

@@ -66,8 +66,6 @@ class RagPipeline
 
     /**
      * Set the source model class for retrieval.
-     *
-     * @return static
      */
     public function from(string $modelClass): static
     {
@@ -79,8 +77,6 @@ class RagPipeline
 
     /**
      * Set the maximum number of chunks to retrieve.
-     *
-     * @return static
      */
     public function limit(int $limit): static
     {
@@ -92,8 +88,6 @@ class RagPipeline
 
     /**
      * Set the minimum similarity threshold.
-     *
-     * @return static
      */
     public function threshold(float $threshold): static
     {
@@ -107,7 +101,6 @@ class RagPipeline
      * Filter results by metadata.
      *
      * @param  array<string, mixed>  $filters
-     * @return static
      */
     public function filter(array $filters): static
     {
@@ -119,8 +112,6 @@ class RagPipeline
 
     /**
      * Set the system prompt for the LLM.
-     *
-     * @return static
      */
     public function systemPrompt(string $prompt): static
     {
@@ -132,8 +123,6 @@ class RagPipeline
 
     /**
      * Set the LLM provider and model.
-     *
-     * @return static
      */
     public function using(string $provider, string $model): static
     {
@@ -146,8 +135,6 @@ class RagPipeline
 
     /**
      * Enable hybrid search with weights.
-     *
-     * @return static
      */
     public function hybrid(float $semanticWeight = 0.7, float $fulltextWeight = 0.3): static
     {
@@ -161,8 +148,6 @@ class RagPipeline
 
     /**
      * Enable re-ranking of retrieved chunks.
-     *
-     * @return static
      */
     public function rerank(?int $topK = null): static
     {
@@ -177,7 +162,6 @@ class RagPipeline
      * Ask a question and get an answer.
      *
      * @param  string  $question  The user's question
-     * @return RagResult
      */
     public function ask(string $question): RagResult
     {
@@ -207,9 +191,6 @@ class RagPipeline
 
     /**
      * Ask and include source references.
-     *
-     * @param  string  $question
-     * @return RagResult
      */
     public function askWithSources(string $question): RagResult
     {
@@ -232,7 +213,6 @@ class RagPipeline
      * Enable agentic RAG with iterative retrieval.
      *
      * @param  int  $maxSteps  Maximum retrieval iterations
-     * @return AgenticRetriever
      */
     public function agentic(int $maxSteps = 3): AgenticRetriever
     {
@@ -244,9 +224,6 @@ class RagPipeline
 
     /**
      * Get a streaming RAG response.
-     *
-     * @param  string  $question
-     * @return RagStream
      */
     public function stream(string $question): RagStream
     {
@@ -290,8 +267,8 @@ class RagPipeline
         }
 
         // Apply metadata filters
-        if (! empty($this->filters)) {
-            $chunks = $chunks->filter(function (array $chunk) {
+        if ($this->filters !== []) {
+            $chunks = $chunks->filter(function (array $chunk): bool {
                 foreach ($this->filters as $key => $value) {
                     if (($chunk['metadata'][$key] ?? null) !== $value) {
                         return false;

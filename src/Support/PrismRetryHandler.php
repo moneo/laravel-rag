@@ -62,7 +62,6 @@ class PrismRetryHandler
      * @param  string  $model  The LLM model
      * @param  string  $systemPrompt  The system prompt
      * @param  string  $userPrompt  The user prompt
-     * @return string
      *
      * @throws GenerationException
      */
@@ -103,7 +102,7 @@ class PrismRetryHandler
                     'operation' => $operationType,
                     'attempt' => $attempt + 1,
                     'max_retries' => $this->maxRetries,
-                    'exception_class' => get_class($e),
+                    'exception_class' => $e::class,
                     'error_message' => $e->getMessage(),
                 ]);
 

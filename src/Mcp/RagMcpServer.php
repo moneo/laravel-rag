@@ -16,7 +16,6 @@ class RagMcpServer
      * Register a model class as an MCP tool.
      *
      * @param  string  $modelClass  The Eloquent model class
-     * @return McpToolRegistrar
      */
     public function register(string $modelClass): McpToolRegistrar
     {
@@ -163,7 +162,7 @@ class RagMcpServer
 
         $chunks = $tool['pipeline']->limit($limit)->dryRun($query);
 
-        $content = $chunks->map(fn (array $chunk) => [
+        $content = $chunks->map(fn (array $chunk): array => [
             'type' => 'text',
             'text' => json_encode([
                 'id' => $chunk['id'],

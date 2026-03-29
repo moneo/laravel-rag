@@ -69,7 +69,7 @@ class VectorizeIndexCommand extends Command
 
         $modelClass::query()->chunk($chunkSize, function ($records) use (
             $store, $embeddingCache, $prism, $config, $embedSource, &$indexed, &$cacheHits, $bar,
-        ) {
+        ): void {
             foreach ($records as $record) {
                 $sourceColumns = (array) $embedSource;
                 $text = collect($sourceColumns)
@@ -77,7 +77,7 @@ class VectorizeIndexCommand extends Command
                     ->filter()
                     ->implode("\n\n");
 
-                if (empty(trim($text))) {
+                if (in_array(trim($text), ['', '0'], true)) {
                     $bar->advance();
 
                     continue;
@@ -106,7 +106,7 @@ class VectorizeIndexCommand extends Command
                     vector: $vector,
                     metadata: [
                         'content' => $text,
-                        'model' => get_class($record),
+                        'model' => $record::class,
                         'id' => $record->getKey(),
                     ],
                 );

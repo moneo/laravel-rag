@@ -82,7 +82,7 @@ class RagLogger
     public static function error(string $operation, \Throwable $e, array $additionalContext = []): void
     {
         Log::error("rag.error.{$operation}", array_merge([
-            'exception' => get_class($e),
+            'exception' => $e::class,
             'message' => $e->getMessage(),
             'code' => $e->getCode(),
             'file' => $e->getFile(),
@@ -104,7 +104,7 @@ class RagLogger
         foreach (['text', 'query', 'question', 'content', 'source_text'] as $field) {
             if (isset($sanitised[$field]) && is_string($sanitised[$field])) {
                 $sanitised["{$field}_hash"] = substr(hash('sha256', $sanitised[$field]), 0, 12);
-                $sanitised["{$field}_length"] = mb_strlen($sanitised[$field]);
+                $sanitised["{$field}_length"] = mb_strlen((string) $sanitised[$field]);
                 unset($sanitised[$field]);
             }
         }

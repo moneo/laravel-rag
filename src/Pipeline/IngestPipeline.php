@@ -92,7 +92,7 @@ class IngestPipeline
             'size' => $size,
             'overlap' => $overlap,
             'threshold' => $threshold,
-        ], fn ($v) => $v !== null);
+        ], fn (int|float|null $v): bool => $v !== null);
 
         $this->chunkSteps[] = [
             'strategy' => $strategy,
@@ -149,7 +149,7 @@ class IngestPipeline
         $targetModel = $this->targetModel;
         $metadata = $this->metadata;
 
-        dispatch(function () use ($content, $chunkSteps, $targetModel, $metadata) {
+        dispatch(function () use ($content, $chunkSteps, $targetModel, $metadata): void {
             $pipeline = app(self::class);
             $pipeline->content = $content;
             $pipeline->chunkSteps = $chunkSteps;
@@ -166,12 +166,12 @@ class IngestPipeline
      */
     protected function processChunks(): array
     {
-        if (empty($this->content)) {
+        if (in_array($this->content, [null, '', '0'], true)) {
             return [];
         }
 
         // Use default strategy if none specified
-        if (empty($this->chunkSteps)) {
+        if ($this->chunkSteps === []) {
             $this->chunkSteps[] = [
                 'strategy' => config('rag.ingest.chunk_strategy', 'character'),
                 'options' => [
@@ -200,7 +200,7 @@ class IngestPipeline
         $store = $this->vectorStore->table($table);
         $config = config('rag.embedding');
 
-        return DB::transaction(function () use ($chunks, $store, $config) {
+        return DB::transaction(function () use ($chunks, $store, $config): array {
             $ids = [];
 
             foreach ($chunks as $index => $chunk) {

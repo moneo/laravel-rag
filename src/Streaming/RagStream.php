@@ -34,7 +34,7 @@ class RagStream
      */
     public function toStreamedResponse(): StreamedResponse
     {
-        return new StreamedResponse(function () {
+        return new StreamedResponse(function (): void {
             try {
                 $systemPromptText = $this->systemPrompt ?? 'You are a helpful assistant. Answer the question based on the provided context.';
                 $fullPrompt = "{$systemPromptText}\n\nContext:\n{$this->context}";
@@ -92,7 +92,7 @@ class RagStream
      */
     protected function getSources(): array
     {
-        return $this->chunks->map(fn (array $chunk) => [
+        return $this->chunks->map(fn (array $chunk): array => [
             'source' => $chunk['metadata']['source'] ?? 'Unknown',
             'score' => $chunk['score'],
             'preview' => mb_substr($chunk['content'] ?? '', 0, 200),
@@ -104,7 +104,7 @@ class RagStream
      */
     protected function flush(): void
     {
-        if (ob_get_level()) {
+        if (ob_get_level() !== 0) {
             ob_flush();
         }
         flush();

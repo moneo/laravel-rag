@@ -59,7 +59,7 @@ class AgenticRetriever
         }
 
         // Generate final answer with all collected chunks
-        $context = $allChunks->map(fn (array $chunk) => $chunk['content'] ?? ($chunk['metadata']['content'] ?? ''))->implode("\n\n---\n\n");
+        $context = $allChunks->map(fn (array $chunk): string => $chunk['content'] ?? ($chunk['metadata']['content'] ?? ''))->implode("\n\n---\n\n");
 
         $answer = $this->generateFinalAnswer($question, $context);
 

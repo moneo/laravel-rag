@@ -50,7 +50,7 @@ class CacheIntegrityGuard
             );
         }
 
-        if (empty($decoded)) {
+        if ($decoded === []) {
             throw new CacheIntegrityException(
                 'Cached embedding is empty. Possible cache corruption.'
             );
@@ -64,6 +64,6 @@ class CacheIntegrityGuard
             }
         }
 
-        return array_map('floatval', $decoded);
+        return array_map(floatval(...), $decoded);
     }
 }

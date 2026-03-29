@@ -36,11 +36,9 @@ class RagEstimateCommand extends Command
 
             // Sample text length
             $sample = $modelClass::query()->take(100)->get();
-            $avgChars = $sample->avg(function ($record) use ($sourceColumns) {
-                return collect($sourceColumns)
-                    ->map(fn ($col) => mb_strlen($record->getAttribute($col) ?? ''))
-                    ->sum();
-            });
+            $avgChars = $sample->avg(fn($record) => collect($sourceColumns)
+                ->map(fn ($col): int => mb_strlen($record->getAttribute($col) ?? ''))
+                ->sum());
 
             $avgTokens = $avgChars / 4; // rough estimate
             $totalTokens = $avgTokens * $total;

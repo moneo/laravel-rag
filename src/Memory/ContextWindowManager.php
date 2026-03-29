@@ -51,7 +51,7 @@ class ContextWindowManager
      */
     protected function formatMessages($messages): string
     {
-        return $messages->map(function (ThreadMessage $msg) {
+        return $messages->map(function (ThreadMessage $msg): string {
             $role = ucfirst($msg->role);
 
             return "{$role}: {$msg->content}";

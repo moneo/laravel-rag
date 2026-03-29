@@ -27,7 +27,6 @@ class ChunkingFactory
      * Create a chunker instance by strategy name.
      *
      * @param  string  $strategy  The strategy name
-     * @return ChunkerContract
      *
      * @throws InvalidArgumentException
      */

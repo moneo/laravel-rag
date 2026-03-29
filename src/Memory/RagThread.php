@@ -44,7 +44,6 @@ class RagThread extends Model
      * Ask a question within this thread's context.
      *
      * @param  string  $question  The user's question
-     * @return RagResult
      */
     public function ask(string $question): RagResult
     {
@@ -80,7 +79,6 @@ class RagThread extends Model
      * @param  string  $role  'user', 'assistant', or 'system'
      * @param  string  $content  The message content
      * @param  array<string, mixed>  $metadata  Optional metadata
-     * @return ThreadMessage
      */
     public function addMessage(string $role, string $content, array $metadata = []): ThreadMessage
     {

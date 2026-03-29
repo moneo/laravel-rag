@@ -86,9 +86,8 @@ class InputSanitiser
 
         // Normalise whitespace (collapse multiple spaces/newlines)
         $cleaned = (string) preg_replace('/\s{3,}/', "\n\n", $cleaned);
-        $cleaned = trim($cleaned);
 
-        return $cleaned;
+        return trim($cleaned);
     }
 
     /**

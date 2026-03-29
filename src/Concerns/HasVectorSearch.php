@@ -74,7 +74,7 @@ trait HasVectorSearch
         }
 
         return static::semanticSearch($vector, $limit + 1, $threshold)
-            ->filter(fn (array $result) => $result['id'] !== (string) $this->getKey())
+            ->filter(fn (array $result): bool => $result['id'] !== (string) $this->getKey())
             ->take($limit)
             ->values();
     }
@@ -137,7 +137,7 @@ trait HasVectorSearch
 
         if (is_string($value)) {
             // pgvector returns string like '[0.1,0.2,...]'
-            return array_map('floatval', explode(',', trim($value, '[]')));
+            return array_map(floatval(...), explode(',', trim($value, '[]')));
         }
 
         if (is_array($value)) {

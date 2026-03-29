@@ -25,7 +25,7 @@ class SemanticChunker implements ChunkerContract
 
         $text = trim($text);
 
-        if (empty($text)) {
+        if ($text === '' || $text === '0') {
             return [];
         }
 
@@ -73,7 +73,7 @@ class SemanticChunker implements ChunkerContract
 
         // Remaining sentences
         $remaining = array_slice($sentences, $start);
-        if (! empty($remaining)) {
+        if ($remaining !== []) {
             $chunk = implode(' ', $remaining);
 
             if (mb_strlen($chunk) > $maxSize) {
@@ -84,7 +84,7 @@ class SemanticChunker implements ChunkerContract
             }
         }
 
-        return array_values(array_filter($chunks, fn (string $c) => ! empty(trim($c))));
+        return array_values(array_filter($chunks, fn (string $c): bool => !in_array(trim($c), ['', '0'], true)));
     }
 
     /**
@@ -158,7 +158,7 @@ class SemanticChunker implements ChunkerContract
             $currentChunk .= ($currentChunk !== '' ? ' ' : '').$sentence;
         }
 
-        if (! empty(trim($currentChunk))) {
+        if (!in_array(trim($currentChunk), ['', '0'], true)) {
             $chunks[] = trim($currentChunk);
         }
 

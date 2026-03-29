@@ -22,17 +22,15 @@ trait AutoEmbeds
 {
     public static function bootAutoEmbeds(): void
     {
-        static::saving(function ($model) {
-            if ($model->shouldGenerateEmbedding()) {
-                if (! $model->getEmbedAsync()) {
-                    $model->generateAndStoreEmbedding();
-                }
+        static::saving(function ($model): void {
+            if ($model->shouldGenerateEmbedding() && ! $model->getEmbedAsync()) {
+                $model->generateAndStoreEmbedding();
             }
         });
 
-        static::saved(function ($model) {
+        static::saved(function ($model): void {
             if ($model->getEmbedAsync() && $model->shouldGenerateEmbedding()) {
-                dispatch(function () use ($model) {
+                dispatch(function () use ($model): void {
                     $model->generateAndStoreEmbedding();
                 });
             }
@@ -62,7 +60,7 @@ trait AutoEmbeds
     {
         $sourceText = $this->getEmbedSourceText();
 
-        if (empty(trim($sourceText))) {
+        if (in_array(trim((string) $sourceText), ['', '0'], true)) {
             return;
         }
 
@@ -99,7 +97,7 @@ trait AutoEmbeds
 
         return collect($sources)
             ->map(fn (string $column) => $this->getAttribute($column) ?? '')
-            ->filter(fn (string $text) => ! empty(trim($text)))
+            ->filter(fn (string $text): bool => !in_array(trim($text), ['', '0'], true))
             ->implode("\n\n");
     }
 

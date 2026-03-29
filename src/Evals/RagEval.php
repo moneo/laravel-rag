@@ -22,8 +22,6 @@ class RagEval
 
     /**
      * Create a new evaluation suite.
-     *
-     * @return static
      */
     public static function suite(): static
     {
@@ -102,7 +100,7 @@ class RagEval
      */
     public function run(): EvalReport
     {
-        if ($this->pipeline === null) {
+        if (!$this->pipeline instanceof \Moneo\LaravelRag\Pipeline\RagPipeline) {
             throw new \RuntimeException('No pipeline set. Call using() before run().');
         }
 
@@ -119,7 +117,7 @@ class RagEval
 
             // Run the pipeline
             $ragResult = $this->pipeline->ask($case['question']);
-            $context = $ragResult->chunks->map(fn (array $c) => $c['content'] ?? '')->implode("\n\n");
+            $context = $ragResult->chunks->map(fn (array $c): string => $c['content'] ?? '')->implode("\n\n");
 
             // Evaluate each metric
             $scores = [];
@@ -147,7 +145,7 @@ class RagEval
 
         // Calculate averages
         $caseCount = max(count($this->cases), 1);
-        $averageScores = array_map(fn (float $total) => $total / $caseCount, $metricTotals);
+        $averageScores = array_map(fn (float $total): float => $total / $caseCount, $metricTotals);
 
         $totalTimeMs = (microtime(true) - $startTime) * 1000;
 

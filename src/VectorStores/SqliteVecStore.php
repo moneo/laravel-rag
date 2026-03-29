@@ -43,7 +43,7 @@ class SqliteVecStore implements VectorStoreContract
         VectorValidator::validate($vector, $this->dimensions);
         $vectorBlob = $this->vectorToBlob($vector);
 
-        $this->db()->transaction(function () use ($id, $vectorBlob, $metadata) {
+        $this->db()->transaction(function () use ($id, $vectorBlob, $metadata): void {
             $this->db()->statement(
                 "INSERT OR REPLACE INTO {$this->table} (id, embedding, metadata, content, updated_at, created_at)
                  VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))",
@@ -82,13 +82,13 @@ class SqliteVecStore implements VectorStoreContract
         );
 
         return collect($results)
-            ->map(fn ($row) => [
+            ->map(fn ($row): array => [
                 'id' => (string) $row->id,
                 'score' => 1.0 - (float) $row->distance,
                 'metadata' => (array) (json_decode((string) $row->metadata, true) ?? []),
                 'content' => (string) ($row->content ?? ''),
             ])
-            ->filter(fn ($row) => $row['score'] >= $threshold)
+            ->filter(fn ($row): bool => $row['score'] >= $threshold)
             ->values();
     }
 
@@ -109,7 +109,7 @@ class SqliteVecStore implements VectorStoreContract
      */
     public function delete(string $id): void
     {
-        $this->db()->transaction(function () use ($id) {
+        $this->db()->transaction(function () use ($id): void {
             $vecTable = "{$this->table}_vec";
 
             // Delete from vec table first (needs rowid)
@@ -129,7 +129,7 @@ class SqliteVecStore implements VectorStoreContract
     {
         $this->validateTableName($collection);
 
-        $this->db()->transaction(function () use ($collection) {
+        $this->db()->transaction(function () use ($collection): void {
             $vecTable = "{$collection}_vec";
             $this->db()->statement("DELETE FROM {$vecTable}");
             $this->db()->table($collection)->truncate();
@@ -168,8 +168,6 @@ class SqliteVecStore implements VectorStoreContract
 
     /**
      * Get the database connection.
-     *
-     * @return \Illuminate\Database\Connection
      */
     protected function db(): \Illuminate\Database\Connection
     {

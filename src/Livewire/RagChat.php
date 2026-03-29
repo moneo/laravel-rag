@@ -47,7 +47,7 @@ class RagChat extends Component
             if ($thread) {
                 $this->messages = $thread->messages()
                     ->get()
-                    ->map(fn ($msg) => [
+                    ->map(fn ($msg): array => [
                         'role' => $msg->role,
                         'content' => $msg->content,
                     ])
@@ -63,7 +63,7 @@ class RagChat extends Component
     {
         $question = trim($this->question);
 
-        if (empty($question)) {
+        if ($question === '' || $question === '0') {
             return;
         }
 

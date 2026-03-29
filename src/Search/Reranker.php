@@ -36,15 +36,13 @@ class Reranker
             return $chunks;
         }
 
-        $topK = $topK ?? $this->topK;
+        $topK ??= $this->topK;
 
-        $scored = $chunks->map(function (array $chunk) use ($query) {
+        $scored = $chunks->map(function (array $chunk) use ($query): array {
             $content = $chunk['content'] ?? ($chunk['metadata']['content'] ?? '');
             $cacheKey = 'rag_rerank:'.hash('sha256', $query.$content);
 
-            $score = Cache::remember($cacheKey, 3600, function () use ($query, $content) {
-                return $this->scoreChunk($query, $content);
-            });
+            $score = Cache::remember($cacheKey, 3600, fn(): float => $this->scoreChunk($query, $content));
 
             return array_merge($chunk, ['rerank_score' => $score]);
         });

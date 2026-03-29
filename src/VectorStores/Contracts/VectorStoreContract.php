@@ -57,7 +57,6 @@ interface VectorStoreContract
      * Set the table/collection to operate on.
      *
      * @param  string  $table  The table name
-     * @return static
      */
     public function table(string $table): static;
 

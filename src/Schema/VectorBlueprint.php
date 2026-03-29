@@ -24,7 +24,7 @@ class VectorBlueprint
             }
 
             // pgvector uses the vector type
-            return $this->addColumn('vector', $column, compact('dimensions'));
+            return $this->addColumn('vector', $column, ['dimensions' => $dimensions]);
         });
 
         Blueprint::macro('vectorIndex', function (string $column, string $method = 'hnsw', string $distance = 'cosine'): void {

@@ -34,10 +34,10 @@ class RagResult implements Arrayable
      */
     public function sources(): Collection
     {
-        return $this->chunks->map(fn (array $chunk) => [
+        return $this->chunks->map(fn (array $chunk): array => [
             'source' => (string) ($chunk['metadata']['source'] ?? 'Unknown'),
             'score' => $chunk['score'],
-            'preview' => mb_substr($chunk['content'], 0, 200),
+            'preview' => mb_substr((string) $chunk['content'], 0, 200),
         ]);
     }
 

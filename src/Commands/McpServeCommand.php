@@ -23,7 +23,7 @@ class McpServeCommand extends Command
 
         $tools = $server->getTools();
 
-        if (empty($tools)) {
+        if ($tools === []) {
             $this->warn('No MCP tools registered. Register tools in your AppServiceProvider.');
             $this->line('Example: RagMcp::register(Document::class)->as("docs")->description("Search documents")->expose();');
 

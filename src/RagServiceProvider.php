@@ -88,7 +88,7 @@ class RagServiceProvider extends ServiceProvider
 
     protected function registerVectorStore(): void
     {
-        $this->app->singleton(VectorStoreContract::class, function ($app) {
+        $this->app->singleton(VectorStoreContract::class, function (array $app): \Moneo\LaravelRag\VectorStores\PgvectorStore|\Moneo\LaravelRag\VectorStores\SqliteVecStore {
             $driver = $app['config']['rag.vector_store'];
             $storeConfig = $app['config']["rag.stores.{$driver}"];
 
@@ -108,11 +108,9 @@ class RagServiceProvider extends ServiceProvider
 
     protected function registerEmbeddingCache(): void
     {
-        $this->app->singleton(EmbeddingCache::class, function ($app) {
-            return new EmbeddingCache(
-                enabled: (bool) $app['config']['rag.embedding.cache'],
-            );
-        });
+        $this->app->singleton(EmbeddingCache::class, fn(array $app): \Moneo\LaravelRag\Cache\EmbeddingCache => new EmbeddingCache(
+            enabled: (bool) $app['config']['rag.embedding.cache'],
+        ));
     }
 
     protected function registerChunkingFactory(): void
@@ -122,48 +120,38 @@ class RagServiceProvider extends ServiceProvider
 
     protected function registerPipelines(): void
     {
-        $this->app->bind('rag.pipeline', function ($app) {
-            return new RagPipeline(
-                vectorStore: $app->make(VectorStoreContract::class),
-                embeddingCache: $app->make(EmbeddingCache::class),
-                hybridSearch: $app->make(HybridSearch::class),
-                reranker: $app->make(Reranker::class),
-                prismRetryHandler: $app->make(PrismRetryHandler::class),
-            );
-        });
+        $this->app->bind('rag.pipeline', fn($app): \Moneo\LaravelRag\Pipeline\RagPipeline => new RagPipeline(
+            vectorStore: $app->make(VectorStoreContract::class),
+            embeddingCache: $app->make(EmbeddingCache::class),
+            hybridSearch: $app->make(HybridSearch::class),
+            reranker: $app->make(Reranker::class),
+            prismRetryHandler: $app->make(PrismRetryHandler::class),
+        ));
 
-        $this->app->bind('rag.ingest', function ($app) {
-            return new IngestPipeline(
-                vectorStore: $app->make(VectorStoreContract::class),
-                chunkingFactory: $app->make(ChunkingFactory::class),
-                embeddingCache: $app->make(EmbeddingCache::class),
-                prismRetryHandler: $app->make(PrismRetryHandler::class),
-            );
-        });
+        $this->app->bind('rag.ingest', fn($app): \Moneo\LaravelRag\Pipeline\IngestPipeline => new IngestPipeline(
+            vectorStore: $app->make(VectorStoreContract::class),
+            chunkingFactory: $app->make(ChunkingFactory::class),
+            embeddingCache: $app->make(EmbeddingCache::class),
+            prismRetryHandler: $app->make(PrismRetryHandler::class),
+        ));
     }
 
     protected function registerSearch(): void
     {
-        $this->app->singleton(HybridSearch::class, function ($app) {
-            return new HybridSearch(
-                vectorStore: $app->make(VectorStoreContract::class),
-                rrfK: (int) $app['config']['rag.search.rrf_k'],
-            );
-        });
+        $this->app->singleton(HybridSearch::class, fn(array $app): \Moneo\LaravelRag\Search\HybridSearch => new HybridSearch(
+            vectorStore: $app->make(VectorStoreContract::class),
+            rrfK: (int) $app['config']['rag.search.rrf_k'],
+        ));
 
-        $this->app->singleton(Reranker::class, function ($app) {
-            return new Reranker(
-                enabled: (bool) $app['config']['rag.reranker.enabled'],
-                topK: (int) $app['config']['rag.reranker.top_k'],
-            );
-        });
+        $this->app->singleton(Reranker::class, fn(array $app): \Moneo\LaravelRag\Search\Reranker => new Reranker(
+            enabled: (bool) $app['config']['rag.reranker.enabled'],
+            topK: (int) $app['config']['rag.reranker.top_k'],
+        ));
     }
 
     protected function registerEvals(): void
     {
-        $this->app->bind('rag.eval', function () {
-            return new RagEval();
-        });
+        $this->app->bind('rag.eval', fn(): \Moneo\LaravelRag\Evals\RagEval => new RagEval());
     }
 
     protected function publishConfig(): void
@@ -201,7 +189,7 @@ class RagServiceProvider extends ServiceProvider
     protected function registerDevTools(): void
     {
         if (class_exists(\Barryvdh\Debugbar\LaravelDebugbar::class)) {
-            $this->app->booted(function ($app) {
+            $this->app->booted(function ($app): void {
                 $debugbar = $app->make(\Barryvdh\Debugbar\LaravelDebugbar::class);
                 $debugbar->addCollector($app->make(DevTools\DebugbarCollector::class));
             });

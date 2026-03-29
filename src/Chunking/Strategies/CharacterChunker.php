@@ -24,7 +24,7 @@ class CharacterChunker implements ChunkerContract
 
         $text = trim($text);
 
-        if (empty($text)) {
+        if ($text === '' || $text === '0') {
             return [];
         }
 
@@ -43,6 +43,6 @@ class CharacterChunker implements ChunkerContract
             $offset += $size - $overlap;
         }
 
-        return array_filter($chunks, fn (string $chunk) => ! empty(trim($chunk)));
+        return array_filter($chunks, fn (string $chunk): bool => !in_array(trim($chunk), ['', '0'], true));
     }
 }

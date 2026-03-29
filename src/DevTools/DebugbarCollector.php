@@ -76,11 +76,11 @@ class DebugbarCollector extends DataCollector implements Renderable
 
     protected function listenToEvents(): void
     {
-        Event::listen(EmbeddingGenerated::class, function () {
+        Event::listen(EmbeddingGenerated::class, function (): void {
             $this->embeddingsGenerated++;
         });
 
-        Event::listen(EmbeddingCacheHit::class, function () {
+        Event::listen(EmbeddingCacheHit::class, function (): void {
             $this->cacheHits++;
         });
     }

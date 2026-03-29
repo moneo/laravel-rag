@@ -48,7 +48,7 @@ class HybridSearch
         // Fallback: pure semantic search with warning
         RagLogger::warning('HybridSearch: falling back to pure semantic search — driver does not support full-text', [
             'table' => $table,
-            'driver' => get_class($store),
+            'driver' => $store::class,
         ]);
 
         return $store->similaritySearch($vector, $limit);
@@ -59,9 +59,6 @@ class HybridSearch
      *
      * @param  Collection<int, array{id: string, score: float, metadata: array, content: string}>  $semanticResults
      * @param  Collection<int, array{id: string, score: float, metadata: array, content: string}>  $fulltextResults
-     * @param  float  $semanticWeight
-     * @param  float  $fulltextWeight
-     * @param  int  $limit
      * @return Collection<int, array{id: string, score: float, metadata: array, content: string}>
      */
     public function mergeWithRRF(
@@ -94,7 +91,7 @@ class HybridSearch
         arsort($scores);
 
         return collect(array_slice(array_keys($scores), 0, $limit))
-            ->map(fn (string $id) => array_merge($items[$id], ['score' => $scores[$id]]))
+            ->map(fn (string $id): array => array_merge($items[$id], ['score' => $scores[$id]]))
             ->values();
     }
 }

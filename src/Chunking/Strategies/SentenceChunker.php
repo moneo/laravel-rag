@@ -20,7 +20,7 @@ class SentenceChunker implements ChunkerContract
 
         $text = trim($text);
 
-        if (empty($text)) {
+        if ($text === '' || $text === '0') {
             return [];
         }
 
@@ -43,7 +43,7 @@ class SentenceChunker implements ChunkerContract
         foreach ($sentences as $sentence) {
             $sentence = trim($sentence);
 
-            if (empty($sentence)) {
+            if ($sentence === '' || $sentence === '0') {
                 continue;
             }
 
@@ -59,7 +59,7 @@ class SentenceChunker implements ChunkerContract
             $sentenceCount++;
         }
 
-        if (! empty(trim($currentChunk))) {
+        if (!in_array(trim($currentChunk), ['', '0'], true)) {
             $chunks[] = trim($currentChunk);
         }
 

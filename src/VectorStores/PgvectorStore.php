@@ -44,7 +44,7 @@ class PgvectorStore implements VectorStoreContract
     {
         VectorValidator::validate($vector, $this->dimensions);
 
-        $this->withDeadlockRetry(function () use ($id, $vector, $metadata) {
+        $this->withDeadlockRetry(function () use ($id, $vector, $metadata): void {
             $vectorString = $this->vectorToString($vector);
 
             $this->db()->statement(
@@ -82,7 +82,7 @@ class PgvectorStore implements VectorStoreContract
             [$vectorString, $vectorString, $threshold, $vectorString, $limit]
         );
 
-        return collect($results)->map(fn ($row) => [
+        return collect($results)->map(fn ($row): array => [
             'id' => (string) $row->id,
             'score' => (float) $row->score,
             'metadata' => (array) (json_decode((string) $row->metadata, true) ?? []),
@@ -130,7 +130,7 @@ class PgvectorStore implements VectorStoreContract
             ]
         );
 
-        return collect($results)->map(fn ($row) => [
+        return collect($results)->map(fn ($row): array => [
             'id' => (string) $row->id,
             'score' => (float) $row->score,
             'metadata' => (array) (json_decode((string) $row->metadata, true) ?? []),
@@ -205,7 +205,7 @@ class PgvectorStore implements VectorStoreContract
                         'attempt' => $attempt + 1,
                         'table' => $this->table,
                     ]);
-                    usleep((int) (100_000 * (2 ** $attempt))); // 100ms, 200ms, 400ms
+                    usleep(100_000 * (2 ** $attempt)); // 100ms, 200ms, 400ms
 
                     continue;
                 }
@@ -240,8 +240,6 @@ class PgvectorStore implements VectorStoreContract
 
     /**
      * Get the database connection.
-     *
-     * @return \Illuminate\Database\Connection
      */
     protected function db(): \Illuminate\Database\Connection
     {

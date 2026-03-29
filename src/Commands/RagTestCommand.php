@@ -47,9 +47,9 @@ class RagTestCommand extends Command
 
                 $this->table(
                     ['#', 'ID', 'Score', 'Content Preview'],
-                    $chunks->map(fn (array $chunk, int $i) => [
+                    $chunks->map(fn (array $chunk, int $i): array => [
                         $i + 1,
-                        mb_substr($chunk['id'], 0, 8).'...',
+                        mb_substr((string) $chunk['id'], 0, 8).'...',
                         number_format($chunk['score'], 4),
                         mb_substr($chunk['content'] ?? '', 0, 80),
                     ])->toArray()
@@ -69,11 +69,11 @@ class RagTestCommand extends Command
             $this->line("<fg=yellow>Sources:</>");
             $this->table(
                 ['#', 'Score', 'Source', 'Preview'],
-                $result->sources()->map(fn (array $source, int $i) => [
+                $result->sources()->map(fn (array $source, int $i): array => [
                     $i + 1,
                     number_format($source['score'], 4),
                     mb_substr($source['source'] ?? 'N/A', 0, 30),
-                    mb_substr($source['preview'], 0, 60),
+                    mb_substr((string) $source['preview'], 0, 60),
                 ])->toArray()
             );
 
