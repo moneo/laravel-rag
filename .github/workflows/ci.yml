@@ -185,7 +185,7 @@ jobs:
           php-version: '8.3'
           coverage: none
       - run: composer install --no-interaction --prefer-dist
-      - run: vendor/bin/phpbench run --report=default --output=md
+      - run: vendor/bin/phpbench run --report=default
 
   # --- Level 2 Jobs ---
 

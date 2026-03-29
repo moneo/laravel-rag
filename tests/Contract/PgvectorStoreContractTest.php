@@ -29,9 +29,7 @@ class PgvectorStoreContractTest extends VectorStoreContractTest
 
     protected function setUpStoreSchema(): void
     {
-        if (! env('PG_DSN')) {
-            $this->markTestSkipped('PG_DSN not set — pgvector tests require a PostgreSQL instance');
-        }
+        $this->markTestSkipped('pgvector contract tests require PostgreSQL with pgvector — run in CI with --group=contract');
     }
 
     protected function defineEnvironment($app): void

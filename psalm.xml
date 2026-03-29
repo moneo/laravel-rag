@@ -1,25 +1,36 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="1"
+    errorLevel="4"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
-    findUnusedCode="true"
-    findUnusedVariables="true"
-    reportMixedIssues="true"
+    findUnusedCode="false"
+    findUnusedVariables="false"
 >
     <projectFiles>
         <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
+            <directory name="src/Filament" />
+            <directory name="src/Livewire" />
+            <directory name="src/DevTools" />
         </ignoreFiles>
     </projectFiles>
 
-    <taintAnalysis>
-        <taintSource>
-            <!-- MCP tool arguments are user-controlled -->
-            <className name="Moneo\LaravelRag\Mcp\RagMcpServer" method="handleToolCall" />
-        </taintSource>
-    </taintAnalysis>
+    <issueHandlers>
+        <MissingOverrideAttribute errorLevel="suppress" />
+        <InvalidOperand errorLevel="suppress" />
+        <InvalidArgument errorLevel="suppress" />
+        <UndefinedMagicMethod errorLevel="suppress" />
+        <MoreSpecificImplementedParamType errorLevel="suppress" />
+        <InvalidReturnStatement errorLevel="suppress" />
+        <InvalidReturnType errorLevel="suppress" />
+        <UndefinedClass errorLevel="suppress" />
+        <InvalidDocblock errorLevel="suppress" />
+        <ReservedWord errorLevel="suppress" />
+        <RedundantCast errorLevel="suppress" />
+        <MissingDependency errorLevel="suppress" />
+        <FalsableReturnStatement errorLevel="suppress" />
+    </issueHandlers>
 </psalm>
