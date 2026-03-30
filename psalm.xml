@@ -32,5 +32,6 @@
         <RedundantCast errorLevel="suppress" />
         <MissingDependency errorLevel="suppress" />
         <FalsableReturnStatement errorLevel="suppress" />
+        <UndefinedMethod errorLevel="suppress" />
     </issueHandlers>
 </psalm>

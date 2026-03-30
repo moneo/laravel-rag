@@ -36,6 +36,8 @@ class BenchmarkRRFMerge
 
             public function flush(string $collection): void {}
 
+            public function updateEmbedding(string $id, array $vector, array $metadata = []): void {}
+
             public function table(string $table): static
             {
                 return $this;
