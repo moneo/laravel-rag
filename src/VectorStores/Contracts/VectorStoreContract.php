@@ -61,6 +61,19 @@ interface VectorStoreContract
     public function table(string $table): static;
 
     /**
+     * Update only the embedding vector on an existing record.
+     *
+     * Unlike upsert(), this does NOT insert new records — it only updates
+     * the embedding column on records that already exist. This avoids
+     * NOT NULL constraint violations on user-defined columns (name, etc.).
+     *
+     * @param  string  $id  The record ID
+     * @param  array<int, float>  $vector  The new embedding vector
+     * @param  array<string, mixed>  $metadata  Optional metadata to update
+     */
+    public function updateEmbedding(string $id, array $vector, array $metadata = []): void;
+
+    /**
      * Check if the vector store driver supports full-text search.
      */
     public function supportsFullTextSearch(): bool;

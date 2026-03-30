@@ -153,7 +153,7 @@ class Document extends Model
 Schema::create('documents', function (Blueprint $table) {
     $table->uuid('id')->primary();
     $table->text('content');
-    $table->vector('embedding', dimensions: 1536);
+    $table->vector('embedding', 1536);
     $table->json('metadata')->nullable();
     $table->timestamps();
 

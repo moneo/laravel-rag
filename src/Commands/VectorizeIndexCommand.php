@@ -54,7 +54,13 @@ class VectorizeIndexCommand extends Command
     ): int {
         $model = new $modelClass;
         $table = $model->getTable();
-        $embedSource = $model->embedSource ?? 'content';
+
+        // FIX BUG-A: Use public getter instead of direct protected property access
+        // AutoEmbeds trait provides getEmbedSource(), fall back to 'content' if not available
+        $embedSource = method_exists($model, 'getEmbedSource')
+            ? $model->getEmbedSource()
+            : 'content';
+
         $store = $vectorStore->table($table);
 
         $total = $modelClass::count();
@@ -101,7 +107,10 @@ class VectorizeIndexCommand extends Command
                     }
                 }
 
-                $store->upsert(
+                // FIX BUG-B: Use updateEmbedding() instead of upsert()
+                // upsert() does INSERT which fails on NOT NULL columns (name, nationality, etc.)
+                // updateEmbedding() only updates the embedding column on existing records
+                $store->updateEmbedding(
                     id: (string) $record->getKey(),
                     vector: $vector,
                     metadata: [

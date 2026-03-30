@@ -7,7 +7,7 @@ namespace Moneo\LaravelRag\Streaming;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Moneo\LaravelRag\Support\RagLogger;
-use PrismPHP\Prism;
+use Prism\Prism\Facades\Prism;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RagStream

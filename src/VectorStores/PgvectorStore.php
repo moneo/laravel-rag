@@ -157,6 +157,38 @@ class PgvectorStore implements VectorStoreContract
     /**
      * @inheritDoc
      */
+    public function updateEmbedding(string $id, array $vector, array $metadata = []): void
+    {
+        VectorValidator::validate($vector, $this->dimensions);
+        $vectorString = $this->vectorToString($vector);
+
+        $this->withDeadlockRetry(function () use ($id, $vectorString, $metadata): void {
+            $updates = ['embedding = ?::vector'];
+            $bindings = [$vectorString];
+
+            if ($metadata !== []) {
+                $updates[] = 'metadata = ?';
+                $bindings[] = json_encode($metadata);
+            }
+
+            if (isset($metadata['content'])) {
+                $updates[] = 'content = ?';
+                $bindings[] = $metadata['content'];
+            }
+
+            $updates[] = 'updated_at = NOW()';
+            $bindings[] = $id;
+
+            $this->db()->statement(
+                "UPDATE {$this->table} SET ".implode(', ', $updates).' WHERE id = ?',
+                $bindings
+            );
+        });
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function supportsFullTextSearch(): bool
     {
         return true;

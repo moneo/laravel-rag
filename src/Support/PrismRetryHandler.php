@@ -10,7 +10,7 @@ use Moneo\LaravelRag\Exceptions\EmbeddingResponseException;
 use Moneo\LaravelRag\Exceptions\EmbeddingServiceException;
 use Moneo\LaravelRag\Exceptions\EmbeddingTimeoutException;
 use Moneo\LaravelRag\Exceptions\GenerationException;
-use PrismPHP\Prism;
+use Prism\Prism\Facades\Prism;
 
 class PrismRetryHandler
 {

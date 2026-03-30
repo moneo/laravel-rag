@@ -194,6 +194,41 @@ class SqliteVecStore implements VectorStoreContract
     /**
      * @inheritDoc
      */
+    public function updateEmbedding(string $id, array $vector, array $metadata = []): void
+    {
+        VectorValidator::validate($vector, $this->dimensions);
+        $vectorBlob = $this->vectorToBlob($vector);
+
+        $db = $this->db();
+        $db->exec('BEGIN TRANSACTION');
+
+        try {
+            // Update main table
+            $stmt = $db->prepare("UPDATE {$this->table} SET embedding = :embedding, updated_at = datetime('now') WHERE id = :id");
+            $stmt->bindValue(':embedding', $vectorBlob, SQLITE3_BLOB);
+            $stmt->bindValue(':id', $id, SQLITE3_TEXT);
+            $stmt->execute();
+            $stmt->close();
+
+            // Update vec table
+            $vecTable = "{$this->table}_vec";
+            $stmt2 = $db->prepare("INSERT OR REPLACE INTO {$vecTable} (rowid, embedding) VALUES ((SELECT rowid FROM {$this->table} WHERE id = :id), :embedding)");
+            $stmt2->bindValue(':id', $id, SQLITE3_TEXT);
+            $stmt2->bindValue(':embedding', $vectorBlob, SQLITE3_BLOB);
+            $stmt2->execute();
+            $stmt2->close();
+
+            $db->exec('COMMIT');
+        } catch (\Throwable $e) {
+            $db->exec('ROLLBACK');
+
+            throw new VectorStoreException("SqliteVecStore updateEmbedding failed: {$e->getMessage()}", 0, $e);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function supportsFullTextSearch(): bool
     {
         return false;

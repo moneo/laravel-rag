@@ -18,3 +18,4 @@ parameters:
         - '#on left side of \?\? always exists and is not nullable#'
         - '#Trait .+ is used zero times and is not analysed#'
         - '#should return Illuminate\\Support\\Collection<int, array\{.+\}> but returns Illuminate\\Support\\Collection<#'
+        - '#Call to an undefined method Prism\\Prism\\Text\\PendingRequest::stream#'
