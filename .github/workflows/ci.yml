@@ -170,7 +170,7 @@ jobs:
       - run: composer install --no-interaction --prefer-dist
       - run: vendor/bin/pest --coverage --min=70 --coverage-clover=coverage.xml --log-junit junit.xml
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: moneo/laravel-rag
